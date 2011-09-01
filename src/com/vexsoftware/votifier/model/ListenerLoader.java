@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 /**
  * Loads vote listeners.
- * 
+ *
  * @author Blake Beaupain
  */
 public class ListenerLoader {
@@ -19,7 +19,7 @@ public class ListenerLoader {
 
 	/**
 	 * Loads all listener class files from a directory.
-	 * 
+	 *
 	 * @param directory
 	 *            The directory
 	 */
@@ -31,8 +31,14 @@ public class ListenerLoader {
 		ClassLoader loader = new URLClassLoader(new URL[] { dir.toURI().toURL() }, VoteListener.class.getClassLoader());
 		for (File file : dir.listFiles()) {
 			String name = file.getName().substring(0, file.getName().lastIndexOf("."));
-			Class<?> clazz = loader.loadClass(name);
-			Object object = clazz.newInstance();
+			Class<?> clazz;
+            Object  object;
+            try {
+                clazz = loader.loadClass(name);
+                object = clazz.newInstance();
+            } catch (Exception e) {
+                continue;
+            }
 			if (!(object instanceof VoteListener)) {
 				log.info("Not a vote listener: " + clazz.getSimpleName());
 				continue;
